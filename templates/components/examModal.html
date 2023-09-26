@@ -1,0 +1,77 @@
+<div class="modal-container hide" id="{{ modal_id }}">
+  <div
+    class="modal"
+    style="padding: 15px; border-radius: 5px; background-color: #fff"
+  >
+    <div class="flexed x-space-between">
+      <h3>{{ modal_title }}</h3>
+      <span type="button" onclick="closeModal({ name: '{{ modal_id }}' })"
+        >&times;</span
+      >
+    </div>
+    <form action="{{ post }}" method="post">
+      {% csrf_token %}
+      <div class="fields" style="gap: 1rem">
+        <div class="field">
+          <label for="title">Title</label>
+          <input
+            name="title"
+            id="title"
+            class="form-input"
+            type="text"
+            placeholder="title for exam"
+            value="{{ title }}"
+          />
+        </div>
+        <div class="flexed x-space-between">
+          <div class="field">
+            <label for="is_page">Page mode</label>
+            <div>
+              <input type="checkbox" class="form-input" name="is_page" {% if is_page %}checked{%endif%} />
+            </div>
+          </div>
+          <div class="field y-end">
+            <label for="shuffle">Shuffle</label>
+            <div>
+              <input type="checkbox" class="form-input" name="shuffle" {% if shuffle %}checked{%endif%} />
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="question_group">Question group</label>
+          <select id="question_group" class="form-input" name="question_group">
+            {% for option in question_groups %}
+            <option value="{{ option.id }}" {% if option.id == question_group.id %}selected{% endif %}>{{ option.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="schedule">Schedule</label>
+          <input id="schedule" type="datetime-local" class="form-input" placeholder="schedule" value="{{ schedule }}" name="schedule">
+        </div>
+        <div class="field">
+          <label for="duration">Duration</label>
+          <input id="duration" type="number" class="form-input" placeholder="duration in mins" value="{{ duration }}" name="duration">
+        </div>
+        <div class="field">
+          <label for="quantity">Quantity</label>
+          <input
+            id="quantity"
+            class="form-input"
+            type="number"
+            placeholder="quantity"
+            value="{{ quantity }}"
+            name="quantity"
+          />
+        </div>
+        <div class="field">
+          <label for="type">Public</label>
+          <div>
+            <input type="checkbox" class="form-input" id="type" name="is_public" {% if is_public %}checked{%endif%}/>
+          </div>
+        </div>
+      </div>
+      <button class="mt-1 button" type="submit">{{ modal_title }}</button>
+    </form>
+  </div>
+</div>

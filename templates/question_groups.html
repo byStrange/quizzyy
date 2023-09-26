@@ -1,0 +1,65 @@
+{% extends './base.html' %} {% block title %} Question Groups {% endblock title %}   {% block content %}
+<!--Container Main start-->
+{% url 'main:question_groups' as question_groups_url %}
+{% include './components/addObjectModal.html' with name="new group" modal_id="addQuestionGroupModal" modal_title="Create question group" post=question_Groups_url %}
+
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4>Question Groups</h4>
+        <div>
+          <i class="bx bx-sm bx-edit" onclick="showModal({ name: 'addQuestionGroupModal'})"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for question_group in question_groups %}
+        <a href="{% url 'main:question_group' question_group.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ question_group.name }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ question_group.question_set.all|length }}</span
+                  >
+                  <span style="color: red">questions</span>
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!--Container Main end-->
+{% endblock content %}

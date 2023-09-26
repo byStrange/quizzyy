@@ -1,0 +1,74 @@
+
+{% load static %}
+{% load nav_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+    <script defer src="{% static 'assets/js/index.js' %}"></script>
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body id="body-pd">
+    <header class="header" id="header">
+      <div class="header_toggle">
+        <i class="bx bx-menu" id="header-toggle"></i>
+      </div>
+      <div class="header_img">
+        <img src="https://i.imgur.com/hczKIze.jpg" alt="" />
+      </div>
+    </header>
+    <div class="l-navbar" id="nav-bar">
+      <nav class="nav">
+        <div>
+          <a href="{% url 'main:index' %}" class="nav_logo">
+            <i class="bx bx-layer nav_logo-icon"></i>
+            <span class="nav_logo-name">Quizzy</span>
+          </a>
+          <div class="nav_list">
+            <a href="{% url 'main:student_groups' %}" class="nav_link {% active_link request 'main:student_groups' %}">
+              <i class="bx bx-user nav_icon"></i>
+              <span class="nav_name">Students</span>
+            </a>
+            <a href="{% url 'main:exams' %}" class="nav_link {% active_link request 'main:exams' %}">
+              <i class="bx bx-message-square-detail nav_icon"></i>
+              <span class="nav_name">Exams</span>
+            </a>
+            <a href="{% url 'main:question_groups' %}" class="nav_link {% active_link request 'main:question_groups' %}">
+              <i class="bx bx-folder nav_icon"></i>
+              <span class="nav_name">Questions</span>
+            </a>
+            <a href="{% url 'main:devices' %}" class="nav_link {% active_link request 'main:devices' %}">
+              <i class="bx bx-devices nav_icon"></i>
+              <span class="nav_name">Devices</span>
+            </a>
+          </div>
+        </div>
+        <a href="{% url 'admin:logout' %}" class="nav_link">
+          <i class="bx bx-log-out nav_icon"></i>
+          <span class="nav_name">SignOut</span>
+        </a>
+      </nav>
+    </div>
+
+    {% block content %}
+     {% endblock content %}
+
+    <script>
+      function showModal({ name }) {
+        const modal = document.getElementById(name);
+        modal.classList.remove("hide");
+      }
+      function closeModal({ name }) {
+        const modal = document.getElementById(name);
+        modal.classList.add("hide");
+      }
+    </script>
+    {% block script %} {% endblock script %}
+  </body>
+</html>

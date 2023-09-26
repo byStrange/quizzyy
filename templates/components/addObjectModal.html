@@ -1,0 +1,30 @@
+<div class="modal-container hide" id="{{ modal_id }}">
+    <div
+      class="modal"
+      style="padding: 15px 10px; border-radius: 5px; background-color: #fff"
+    >
+      <div class="flexed x-space-between">
+        <h3>{{ modal_title }}</h3>
+        <span type="button" onclick="closeModal({ name: '{{ modal_id }}'})"
+          >&times;</span
+        >
+      </div>
+      <form action="{{ post }}" method="post">
+        {% csrf_token %}
+        <div class="fields" style="gap: 1rem">
+          <div class="field">
+            <label for="name">Name</label>
+            <input
+              id="name"
+              class="form-input"
+              type="text"
+              placeholder="name for {{ name }}"
+              name="name"
+            />
+          </div>
+        </div>
+        <button class="mt-1 button" type="submit">Done</button>
+      </form>
+    </div>
+  </div>
+  

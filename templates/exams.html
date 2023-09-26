@@ -1,0 +1,43 @@
+{% extends "./base.html" %} {% block title %} Exams {% endblock title %} {% block content %}
+{% url 'main:exams' as exams_url %}
+{% include './components/examModal.html' with modal_title="Create Exam" modal_id="addExamModal" question_groups=question_groups post=exams_url %}
+<!--Container Main start-->
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <h4>Exams</h4>
+      <div>
+        <i class="bx bx-sm bx-edit" onclick="showModal({ name: 'addExamModal' })"></i>
+      </div>
+    </div>
+    {% for exam in exams %}
+    <a href="{% url 'main:exam' exam.id %}">
+      <div class="panel-card">
+        <div class="content">
+          <div>
+            <h4>{{ exam.title }}</h4>
+              <p >
+                <span style="color: lime">{{ exam.quantity }}</span>
+                <span style="color: red">questions</span>, 
+                <span>{{ exam.schedule }}</span>,
+                <span style="color: lime">{% if exam.is_public %}Public{% else %}Private{% endif %}</span>
+              </p>
+          </div>
+          <div>
+            <i class="bx bx-md bx-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    {% endfor %}
+  </div>
+</div>
+<!--Container Main end-->
+
+{% endblock content %}

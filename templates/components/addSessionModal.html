@@ -1,0 +1,35 @@
+<div class="modal-container hide" id="{{ modal_id }}">
+  <div
+    class="modal"
+    style="padding: 15px 10px; border-radius: 5px; background-color: #fff"
+  >
+    <div class="flexed x-space-between">
+      <h3>{{ modal_title }}</h3>
+      <span type="button" onclick="closeModal({ name: '{{ modal_id }}'})"
+        >&times;</span
+      >
+    </div>
+
+    {% csrf_token %}
+    <div class="fields" style="gap: 1rem">
+      <div class="field">
+        <label for="name">Login link</label>
+        <input
+          id="name"
+          class="form-input"
+          type="text"
+          name="name"
+          readonly
+          value="{{ request.scheme }}://{{ request.get_host }}{% url 'main:device_login' device.id %}"
+        />
+        <span class="text-muted mt-1">Open this link on desired device in order to login</span>
+      </div>
+    </div>
+    <button
+      class="mt-1 button"
+      onclick="navigator.clipboard.writeText(`${location.origin}{% url 'main:device_login' device.id %}`).then( () => { alert('Copied to clipboard!'); }, (err) => { console.error('Failed to copy text: ', err); });"
+    >
+      Copy
+    </button>
+  </div>
+</div>

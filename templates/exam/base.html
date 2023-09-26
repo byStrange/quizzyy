@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'assets/css/fonts.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/root.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/builtins.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/notification.css' %}" />
+    {% block head %} {% endblock head %}
+    <style>
+      :root {
+        --primary: #bb96fc;
+        --secondary: #03dac5;
+      }
+      body {
+        font-family: var(--body-font);
+        background: linear-gradient(35deg, var(--primary), var(--secondary));
+      }
+
+      .exam {
+        padding: 0.25rem 1rem;
+        color: #fff;
+        border-radius: 0.25rem;
+        background: var(--first-color-light);
+        font-size: 2rem;
+        cursor: pointer;
+      }
+      .card {
+        background: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 540px;
+        margin: 0 auto;
+      }
+      .card.correct .card-answer {
+        background: green;
+      }
+      .card.incorrect .card-answer {
+        background: red;
+      }
+      #results .card:not(.correct, .incorrect) {
+        opacity: 0.7;
+        position: relative;
+      }
+      #results .card.correct .question--answer {
+        opacity: 0.3;
+        font-size: 14px;
+      }
+      #results .card:not(.correct, .incorrect)::after {
+        content: "";
+        width: 33px;
+        height: 2px;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 33px;
+      }
+    </style>
+    <title>{% block title%} {% endblock title %}</title>
+  </head>
+  <body style="max-width: 1200px; margin: 0 auto">
+    {% for message in messages %} {% include "../components/notification.html"
+    with message=message %} {% endfor %}
+    <div class="flexed p-10 x-end position-fixed">
+      <nav class="px-1">
+        {% if request.user.is_staff %}
+        <h3 class="mb-0">{{ request.user.username }}</h3>
+        <a
+          href="{% url 'main:index' %}"
+          class="fs-medium"
+          style="color: var(--card-focus-ring-color)"
+          >go to dashboard</a
+        >
+        {% else %}
+        <h3>{{ request.user.devicesession_set.first.device.name }}</h3>
+        {% endif %}
+      </nav>
+    </div>
+
+    {% block content %}{% endblock content %}
+
+    <script>
+      var notifications = document.querySelectorAll(".notification");
+      notifications.forEach((notification) => {
+        notification.style.display = "block";
+        notification.style.transform = "translateY(0)";
+      });
+      function closeNotification(closeButton) {
+        const notification =
+          closeButton.parentElement.parentElement.parentElement;
+        notification.style.transform = "translateY(-200%)";
+        setTimeout(function () {
+          notification.style.display = "none";
+        }, 300);
+      }
+    </script>
+  </body>
+</html>

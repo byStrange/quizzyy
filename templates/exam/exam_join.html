@@ -1,0 +1,84 @@
+{% extends './base.html'%} {% block title %} Join exam {{ exam.title }} {% endblock%} {% block content %}
+<style>
+  button.styled {
+    padding: 0.4em 0.8em;
+    color: #fff;
+    font-weight: bold;
+    background: #26aa36;
+    border: none;
+    border-bottom-width: medium;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+    border-radius: 2em;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 0.2em 0 rgba(0, 0, 0, 0.1), 0 2px 0 0 rgba(0, 0, 0, 0.1);
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+  }
+  .box::before {
+    pointer-events: none;
+    content: " ";
+    position: absolute;
+    z-index: 1;
+    top: 0.2em;
+    left: 0.2em;
+    right: 0.2em;
+    bottom: 0.2em;
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+  }
+  .box {
+    position: relative;
+    padding: 1em;
+    background: #eee;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.05), 0 0.2em 0.3em rgba(0, 0, 0, 0.05),
+      0 0 0.2em inset rgba(255, 255, 255, 0.5);
+    border-radius: 0.25em;
+  }
+  .setNickname.page .line {
+    margin-top: 0.5em;
+  }
+  .setNickname.page .nickname {
+    margin-right: 0.5em;
+  }
+  input.styled {
+    box-shadow: 0 2px rgba(32, 32, 32, 0.05) inset;
+  }
+  input.styled,
+  input.styled:disabled,
+  textarea.styled,
+  select.styled {
+    padding: 0.4em;
+    border-radius: 0.2em;
+    background: #fff;
+    border: 1px solid #bbb;
+    color: #222;
+  }
+</style>
+<div class="vh-100 flexed xy-centered">
+  <div style="transform: scale(1.5)">
+    <form class="setNickname box" method="post" action="">
+      {% csrf_token %}
+      <div data-text="enterYourNickname">Enter your username:</div>
+      <div class="flexed y-centered gap-few">
+        <input
+          class="styled nickname"
+          type="text"
+          placeholder="Your username"
+          data-placeholder-text="yourName"
+          required=""
+          minlength="2"
+          maxlength="64"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+          name="username"
+        />
+        <button class="styled">OK</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

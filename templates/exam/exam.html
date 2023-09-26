@@ -1,0 +1,215 @@
+{% extends './base.html' %} {% load static %} {% block title %} Exam {% endblock title %} {% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/exam.css' %}" />
+
+<script defer src="{% static 'assets/js/splide.min.js' %}"></script>
+
+<link href="{% static 'assets/css/splide.min.css' %}" rel="stylesheet" />
+
+{% endblock head %} {% block content %}
+
+<div class="container vh-100 flexed column">
+  <div class="countdown-container" style="position: fixed; right: 20px; top: 20px; padding: 20px; border-radius: .5rem; background-color: #151515; color: #fff; font-weight: bold" id="countDownDisplay">...</div>
+  <div class="row">
+    <form action="" method="post" id="examForm">
+      {% csrf_token %}
+      <div class="col" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; align-items: center; gap: 5px">
+          <h2 class="m-0">{{ student_exam.student.full_name }}</h2>
+          -
+          <h4 class="marked m-0">{{ exam.title }}</h4>
+        </div>
+        {% if exam.is_page %} {% for question in student_exam.questions.all %}
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: start;
+            "
+          >
+            <img
+              src="{% if question.image %} {{ question.image.url }} {% endif %}"
+              width="200"
+            />
+            <span class="title"
+              >{{forloop.counter}}. {{ question.question }}</span
+            >
+          </div>
+          <div class="options">
+            {% for option in question.options.all %}
+            <label for="option{{ question.id }}__{{ option.id }}">
+              <div class="option">
+                <input
+                  class="question__option"
+                  type="radio"
+                  name="answer{{ question.id }}"
+                  id="option{{ question.id }}__{{ option.id }}"
+                  value="{{ option.id }}"
+                  data-question-id="{{ question.id }}"
+                />
+                <span>{{ option.name }}</span>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+          {% if forloop.last %}
+          <button type="submit" class="btn">Tugatish</button>
+          {% endif %}
+        </div>
+        {% endfor %} {% else %}
+        <section
+          class="splide"
+          aria-label="Splide Basic HTML Example"
+          id="examSplide"
+        >
+          <div class="splide__track">
+            <ul class="splide__list">
+              {% for question in student_exam.questions.all %}
+              <li class="splide__slide">
+                <div class="card">
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: start;
+                    "
+                  >
+                    <img
+                      src="{% if question.image %} {{ question.image.url }} {% endif %}"
+                      width="200"
+                    />
+                    <span class="title"
+                      >{{forloop.counter}}. {{ question.question }}</span
+                    >
+                  </div>
+                  <div class="options">
+                    {% for option in question.options.all %}
+                    <label for="option{{ question.id }}__{{ option.id }}">
+                      <div class="option">
+                        <input
+                          class="question__option"
+                          type="radio"
+                          name="answer{{ question.id }}"
+                          id="option{{ question.id }}__{{ option.id }}"
+                          value="{{ option.id }}"
+                          data-question-id="{{ question.id }}"
+                        />
+                        <span>{{ option.name }}</span>
+                      </div>
+                    </label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </section>
+        <div class="navigators flexed x-space-between">
+          <button class="btn" id="prev" type="button">previous</button>
+          <button class="btn" id="next" type="button">next</button>
+        </div>
+        {% endif %}
+        <hr />
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const csrf_token = document.querySelector(
+    '[name="csrfmiddlewaretoken"]'
+  ).value;
+  window.addEventListener("DOMContentLoaded", () => {
+    const examForm = document.getElementById("examForm")
+    function startCountdown(minutes) {
+      let initialTime = localStorage.getItem("countdownTime");
+
+      if (!initialTime) {
+        initialTime = minutes * 60; 
+        localStorage.setItem("countdownTime", initialTime);
+      }
+      const countdownDisplay = document.getElementById("countDownDisplay"); 
+      const countdownInterval = setInterval(() => {
+        if (initialTime <= 0) {
+          clearInterval(countdownInterval);
+          localStorage.removeItem("countdownTime");
+          countdownDisplay.innerText = "Countdown completed!";
+          examForm.submit()
+        } else {
+          const hoursRemaining = Math.floor(initialTime / 3600);
+          const minutesRemaining = Math.floor((initialTime % 3600) / 60);
+          const secondsRemaining = initialTime % 60;
+          
+          const formattedTime = `${hoursRemaining > 0 ? hoursRemaining + ':' : ''}${minutesRemaining}:${secondsRemaining < 10 ? '0' : ''}${secondsRemaining}`;
+          
+          countdownDisplay.innerText = `${formattedTime}`;
+          initialTime--;
+          localStorage.setItem("countdownTime", initialTime);
+        }
+      }, 1000);
+    }
+    startCountdown(2)
+    //startCountdown(+`{{ exam.duration }}`)
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    const options = document.querySelectorAll(".question__option");
+    options.forEach((option) => {
+      option.onchange = (e) => {
+        const questionId = option.dataset.questionId;
+        const optionId = option.value;
+        const data = JSON.stringify({
+          question_id: questionId,
+          option_id: optionId,
+        });
+        fetch(`{% url 'exam:check_answer' exam.id student_exam.id %}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token,
+          },
+          method: "post",
+          body: data,
+        })
+          .then((r) => r.json())
+          .then((res) => {
+            const parent = option.parentElement;
+            parent.parentElement.parentElement
+              .querySelectorAll(".question__option")
+              .forEach((o) => (o.disabled = true));
+            if (res.success) {
+              parent.style.borderColor = "green";
+              parent.style.backgroundColor = "rgba(0, 255, 0, .1)";
+            } else {
+              parent.style.borderColor = "red";
+              parent.style.backgroundColor = "rgba(255, 0, 0, .1)";
+            }
+          });
+      };
+    });
+
+    const examSplide = new Splide("#examSplide", {
+      arrows: false,
+      pagination: false,
+      drag: false,
+    }).mount();
+
+    examSplide.on("moved", function (newIndex, prevIndex, destIndex) {
+      if (examSplide.length - 1 === examSplide.index) {
+        nextBtn.type = "submit";
+        nextBtn.innerText = "Finish";
+        nextBtn.onclick = null;
+      } else {
+        nextBtn.type = "button";
+        next.innerText = "next";
+        nextBtn.onclick = () => splideGo(">");
+      }
+    });
+
+    prevBtn.onclick = () => splideGo("<");
+    nextBtn.onclick = () => splideGo(">");
+    const splideGo = (way) => {
+      examSplide.go(way);
+    };
+  });
+</script>
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends './base.html' %} {% block title %} Results {% endblock title%} {% block content %}
+
+<div class="container flexed x-centered column" style="padding: 10vh 0 5vh 0; overflow: auto" id="results">
+  <div class="row">
+    <div class="col" style="display: flex; flex-direction: column; gap: 10px">
+      <div class="flexed xy-centered gap-few">
+        <h2 class="m-0">{{ result.student.full_name }}</h2>
+        -
+        <h4 class="marked m-0">{{ result.exam.title }}</h4>
+      </div>
+      <div class="flexed xy-centered gap-few">
+        <h4 class="m-0">Umumiy natijangiz {{ result.score }}</h4>
+      </div>
+      {% for question in result.questions.all %}
+      <div class="card {% for answer in question.answer_set.all %}{% if answer.student == result.student %}{% if  answer.answer == answer.question.question_answer %}correct{% else %}incorrect{% endif %}{% endif %}{% endfor %}">
+        <div
+          style="display: flex; gap: 10px;"
+        class="y-centered">
+          <span class="fw-bold title"
+            >{{forloop.counter}}. {{ question.question }}</span
+          >
+          <span class="card-answer" style="color: #fff; border-radius: 5px; padding: .25rem; display: inline-block;">{% for answer in question.answer_set.all %} {% if answer.student == result.student %} {{answer.answer}} {%endif%} {% endfor %}</span>
+        </div>
+        <span class="question--answer">Answer: {{ question.question_answer.name }}</span>
+        {% if forloop.last %}
+        <div class="mt-1">
+          <a  href="/">Navigate home</a>
+        </div>
+      {% endif  %}
+      </div>
+    
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

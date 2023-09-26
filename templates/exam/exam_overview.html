@@ -1,0 +1,66 @@
+{% extends './base.html' %} {% block title %} {{ exam.title }} overview {% endblock %} {% block content %}
+<style>
+  .timer::before {
+    content: "exam is scheduled, u can start it after";
+    position: absolute;
+    opacity: 0.5;
+    top: -5px;
+  }
+</style>
+
+<div class="container vh-100 flexed xy-centered">
+  <div>
+    <div class="timer position-relative">
+      <span style="font-size: 4vw" id="countdown"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  console.log("{{ exam.schedule|date:'Y-m-d H:i:s' }}");
+  const examScheduleTimestamp = new Date(
+    "{{ exam.schedule|date:'Y-m-d H:i:s' }}"
+  ).getTime();
+  const currentTime = new Date().getTime();
+  const timeDifference = examScheduleTimestamp - currentTime;
+  const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  function startCountdown(days, hours, minutes, seconds) {
+    const countdownElement = document.getElementById("countdown");
+    countdownElement.innerHTML = `${days}:${hours}:${minutes}:${seconds}s`;
+
+    // Calculate the target time in milliseconds
+    const targetTime =
+      new Date().getTime() +
+      days * 86400000 +
+      hours * 3600000 +
+      minutes * 60000 +
+      seconds * 1000;
+
+    // Update the countdown every second
+    const countdownInterval = setInterval(function () {
+      const currentTime = new Date().getTime();
+      const timeLeft = targetTime - currentTime;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        countdownElement.innerHTML = "Countdown expired!";
+        window.location.pathname = "{% url 'exam:exam_join'  exam.id %}"
+      } else {
+        const daysLeft = Math.floor(timeLeft / 86400000);
+        const hoursLeft = Math.floor((timeLeft % 86400000) / 3600000);
+        const minutesLeft = Math.floor((timeLeft % 3600000) / 60000);
+        const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
+
+        countdownElement.innerHTML = `${daysLeft}:${hoursLeft}:${minutesLeft}:${secondsLeft}s`;
+      }
+      // Example usage: start countdown with 2 days, 4 hours, 30 minutes, and 15 seconds
+    }, 1000);
+  }
+  startCountdown(days, hours, minutes, seconds);
+</script>
+{% endblock content %}

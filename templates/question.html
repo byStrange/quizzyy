@@ -1,0 +1,178 @@
+{% extends './base.html' %} {% block title %} Question Groups {% endblock title %} {% block content %}
+
+{% url 'main:question_groups' as question_groups_url %}
+{% include './components/addObjectModal.html' with name="new group" modal_id="addQuestionGroupModal" modal_title="Create question group" post=question_Groups_url %}
+
+<!--Container Main start-->
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4>Question Groups</h4>
+        <div>
+          <i class="bx bx-sm bx-edit" onclick="showModal({name: 'addQuestionGroupModal'})"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for question_group in question_groups %}
+        <a href="{% url 'main:question_group' question_group.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ question_group.name }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ question_group.question_set.all|length }}</span
+                  >
+                  <span style="color: red">questions</span>
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4 contenteditable>{{ question_group.name }}</h4>
+        <div>
+          <a href="{% url 'main:question_add' question_group.id %}">
+            <i class="bx bx-sm bx-edit"></i>
+          </a>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for question in question_group.question_set.all %}
+        <a href="{% url 'main:question' question_group.id question.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ question.question }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ question.question_answer.name }}</span
+                  >
+                  {% for option in question.options.all %}
+                  <span style="color: red">{{ option.name }}</span>, {% endfor %}
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+      <h1>Question Groups</h1>
+    </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4 contenteditable>Question</h4>
+      </div>
+      <div class="form">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="fields">
+            <div class="field">
+              <label for="title">Question</label>
+              <input
+                class="form-input"
+                type="text"
+                placeholder="question"
+                value="{{ question.question }}"
+                name="question"
+              />
+            </div>
+            <div class="field">
+              <label>Options</label>
+              {% for option in question.options.all %}
+              <div class="input-group" tabindex="{{ forloop.counter }}">
+                <div class="group">
+                  <input type="radio" name="answer" value="{{ forloop.counter0 }}" tabindex="{{ forloop.counter }}" {% if question.question_answer.id == option.id %} checked {%endif%}/>
+                </div>
+                <div class="group">
+                  <input
+                    type="text"
+                    value="{{ option.name }}"
+                    class="form-input"
+                    name="option"
+                  />
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <button class="mt-1 button" type="submit">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Container Main end-->
+{% endblock content %}

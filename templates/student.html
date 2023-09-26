@@ -1,0 +1,116 @@
+{% extends './base.html' %} {% block title %}Group {{ student_group.name }} {% endblock title %} {% block content %}
+
+{% url "main:student_group" student_group.id as student_group_url %}
+{% url "main:student_groups" as student_groups_url%}
+
+{% include './components/addObjectModal.html' with name="student group" modal_id="addStudentGroupModal" modal_title="Create student group" post=student_groups_url %}
+{% include './components/addObjectModal.html' with name="student" modal_id="addStudentModal" modal_title="Create student" post=student_group_url %}
+
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <h4>Student Groups</h4>
+      <div>
+        <i
+          class="bx bx-sm bx-edit"
+          onclick="showModal({name: 'addStudentGroupModal'})"
+        ></i>
+      </div>
+    </div>
+    {% for student_group in student_groups %}
+    <a href="{% url 'main:student_group'  student_group.id %}">
+      <div class="panel-card">
+        <div class="content">
+          <div>
+            <h4>{{ student_group.name }}</h4>
+            <p>
+              <span style="color: lime"
+                >{{ student_group.student_set.all|length }}</span
+              >
+            </p>
+          </div>
+          <div>
+            <i class="bx bx-md bx-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <h4>Student</h4>
+      <div>
+        <i class="bx bx-sm bx-edit" onclick="showModal({ name: 'addStudentModal'})"></i>
+      </div>
+    </div>
+    {% for student in student_group.student_set.all %}
+   <a href="{% url 'main:student' student_group.id student.id %}">
+     <div class="panel-card">
+      <div class="content">
+        <div>
+          <h4>{{ student.full_name }}</h4>
+          <p>
+              {% for attempt in student.examattempt_set.all %}
+            <span style="color: lime"> {{  attempt.exam.title }} </span>,
+            {% endfor %}
+          </p>
+        </div>
+        <div>
+          <i class="bx bx-md bx-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+   </a>
+    {% endfor %}
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+      <h1>Question Groups</h1>
+    </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4 contenteditable>{{ student.full_name }}</h4>
+        <div>
+            <button class="button">update</button>
+        </div>
+      </div>
+      <div class="panel-cards flexed column gap-1" style="display: flex; flex-direction: column; gap: 10px  ">
+        {% for attempt in attempts %}
+        <div class="panel-card">
+          <div class="content">
+            <div>
+              <h4>{{ attempt.exam.title }}</h4>
+              <p>
+                <span style="color: lime">{{ attempt.created_at }}</span>
+                <span style="color: red">{{ attempt.score }}/{{ attempt.exam.quantity }}</span>
+              </p>
+            </div>
+            <div>
+              <i class="bx bx-md bx-chevron-right"></i>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

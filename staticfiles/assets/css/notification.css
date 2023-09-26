@@ -1,0 +1,51 @@
+
+.notification {
+  position: fixed;
+  top: 20px; /* Adjust the top position as needed */
+  right: 20px;
+  background-color: #4285f4;
+  color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+  transform: translateY(-100%); /* Adjust the initial transform value */
+  transition: all 300ms;
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.icon-container {
+  background-color: yellow;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.icon-warning {
+  color: red;
+}
+
+.close {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Close button style */
+.close-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}

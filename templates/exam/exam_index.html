@@ -1,0 +1,17 @@
+{% extends './base.html' %} {% block title %} {% endblock %} {% block content %}
+
+<div class="container vh-100 flexed xy-centered">
+  <div style="width: 250px; height: 60vh; background-color: #dcdcdc"></div>
+  <div class="card">
+    <p class="fs-mid fw-bold m-few">Available exams</p>
+    <div class="exams flexed column gap-1">
+      {% for exam in exams %}
+      <a href="{% url 'exam:exam_overview' exam.id %}" class="text">
+        <div class="exam">{{ exam.title }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="width: 250px; height: 600px; background-color: #  dcdcdc"></div>
+</div>
+{% endblock content %}

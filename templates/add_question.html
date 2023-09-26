@@ -1,0 +1,235 @@
+{% extends './base.html' %} {% block title %} Question Groups {% endblock title %}   {% block content %}
+<!--Container Main start-->
+
+<div class="modal-container hide" id="addQuestionGroupModal">
+  <div
+    class="modal"
+    style="padding: 15px 10px; border-radius: 5px; background-color: #fff"
+  >
+    <div class="flexed x-space-between">
+      <h3>Create question group</h3>
+      <span type="button" onclick="closeModal({ name: 'addQuestionGroupModal'})">&times;</span>
+    </div>
+    <form action="#" method="post">
+      <div class="fields" style="gap: 1rem">
+        <div class="field">
+          <label for="title">Title</label>
+          <input
+            id="title"
+            class="form-input"
+            type="text"
+            placeholder="title for question group"
+          />
+        </div>
+      </div>
+      <button class="mt-1 button" type="submit">Create</button>
+    </form>
+  </div>
+</div>
+
+
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4>Question Groups</h4>
+        <div>
+          <i class="bx bx-sm bx-edit" onclick="showModal({name: 'addQuestionGroupModal'})"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for question_group in question_groups %}
+        <a href="{% url 'main:question_group' question_group.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ question_group.name }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ question_group.question_set.all|length }}</span
+                  >
+                  <span style="color: red">questions</span>
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4 contenteditable>{{ question_group.name }}</h4>
+        <div>
+          <i class="bx bx-sm bx-edit"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for question in question_group.question_set.all %}
+        <a href="{% url 'main:question' question_group.id question.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ question.question }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ question.question_answer.name }}</span
+                  >
+                  {% for option in question.options.all %}
+                  <span style="color: red">{{ option.name }}</span>,
+                  {% endfor %}
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+      <h1>Question Groups</h1>
+    </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4 contenteditable>Question</h4>
+      </div>
+      <div class="form">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="fields">
+            <div class="field">
+              <label for="title">Question</label>
+              <input
+                class="form-input"
+                type="text"
+                placeholder="question"
+                name="question"
+              />
+            </div>
+            <div class="field">
+              <label>Options</label>
+        
+              <div class="input-group">
+                <div class="group">
+                  <input type="radio" name="answer" value="0"/>
+                </div>
+                <div class="group">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="option"
+                    />
+                </div>
+              </div>
+
+              <div class="input-group">
+                <div class="group">
+                  <input type="radio" name="answer" value="1" />
+                </div>
+                <div class="group">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="option"
+                  />
+                </div>
+              </div>
+              <div class="input-group">
+                <div class="group">
+                  <input type="radio" name="answer" value="2" />
+                </div>
+                <div class="group">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="option"
+                  />
+                </div>
+              </div>
+              <div class="input-group">
+                <div class="group">
+                  <input type="radio" name="answer" value="3" />
+                </div>
+                <div class="group">
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="option"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="mt-1 button" type="submit">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Container Main end-->
+{% endblock content %}

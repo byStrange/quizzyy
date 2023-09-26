@@ -1,0 +1,116 @@
+{% extends './base.html' %} {% block title %} Question Groups {% endblock title %}   {% block content %}
+<!--Container Main start-->
+{% url 'main:devices' as devices_url %}
+{% url 'main:device_login' device.id as device_login_url %}
+{% include './components/addObjectModal.html' with name="new device" modal_id="addNewDeviceModal" modal_title="Create device" post=devices_url  %}
+{% include './components/addSessionModal.html' with modal_id="addNewSessionModal" modal_title="New Session"%}
+
+<div
+  class="height-100"
+  style="background-color: var(--white-color); display: flex; gap: 20px"
+>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4>Devices</h4>
+        <div>
+          <i class="bx bx-sm bx-edit" onclick="showModal({ name: 'addNewDeviceModal'})"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for device in devices %}
+        <a href="{% url 'main:device' device.id %}">
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ device.name }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{  device.created_at }}</span
+                  >
+                  <span style="color: red">{{ device.devicesession_set.all|length }} sessions</span>
+                </p>
+              </div>
+              <div>
+                <i class="bx bx-md bx-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="max-width: 33%">
+    <!-- <div class="title">
+          <h1>Question Groups</h1>
+        </div> -->
+
+    <div
+      class="content"
+      style="display: flex; flex-direction: column; gap: 10px"
+    >
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h4>Sessions</h4>
+        <div>
+          <i class="bx bx-sm bx-edit" onclick="showModal({ name: 'addNewSessionModal'})"></i>
+        </div>
+      </div>
+      <div
+        class="panel-cards"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 18px;
+        "
+      >
+        {% for device_session in device.devicesession_set.all %}
+          <div class="panel-card">
+            <div class="content">
+              <div>
+                <h4>{{ device_session.device_info|parse:"browser" }}</h4>
+                <p>
+                  <span style="color: lime"
+                    >{{ device.created_at }}</span
+                  >
+                  <span style="color: red">{{ device_session.device_info|parse:"device"}}, {{ device_session.device_info|parse:"os"}}</span>
+                  <span style="color: lime;">{{ device_session.device_info|parse:"ip_addr"}}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!--Container Main end-->
+{% endblock content %}
