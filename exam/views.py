@@ -17,7 +17,6 @@ from main.models import Exam, Student, ExamAttempt, Question, Option, Answer
 def index_view(request):
     if request.user.is_authenticated:
         exams = Exam.objects.filter(is_public=True)
-        print(exams)
         return render(request, "exam/exam_index.html", {"exams": exams})
     else:
         return HttpResponseForbidden()
